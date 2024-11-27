@@ -76,13 +76,22 @@
   <!-- End Matomo Code -->
 
   <script>
-    // Restrict checkbox selections to 2
+    // Restrict checkbox selections to 2 and manage deselected dishes
     document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
       checkbox.addEventListener('change', () => {
         const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+        
+        // If more than 2 selected, uncheck the last checkbox and remove it from the cart
         if (selectedItems.length > 2) {
           alert('You can only select up to 2 dishes.');
-          checkbox.checked = false; // Uncheck the last selected checkbox
+          checkbox.checked = false;
+
+          // Remove the deselected dish from Matomo tracking
+          const dishId = checkbox.value;
+          _paq.push(['removeEcommerceItem', dishId]);
+          console.log(`Dish removed from cart: ${dishId}`);
+        } else {
+          logCheckboxSelection(checkbox);
         }
       });
     });
@@ -94,21 +103,17 @@
       const price = parseFloat(checkbox.getAttribute('data-price'));
       const action = checkbox.checked ? 'Selected' : 'Deselected';
 
-      // Push to Matomo
-      _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
-
       if (checkbox.checked) {
-        // Track the eCommerce product view when selected
-        _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); // Log product view
-        _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); // Add to cart simulation
-        console.log(`Dish: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
+        // Track the eCommerce product view and add it to the cart when selected
+        _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
+        _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); // Add to cart
+        console.log(`Dish added to cart: ${dishId}, Category: ${categoryName}, Price: $${price}`);
+      } else {
+        // Remove the product from the cart when deselected
+        _paq.push(['removeEcommerceItem', dishId]);
+        console.log(`Dish removed from cart: ${dishId}`);
       }
     }
-
-    // Add event listeners to all checkboxes for logging
-    document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
-      checkbox.addEventListener('change', () => logCheckboxSelection(checkbox));
-    });
 
     // Track form submissions
     document.getElementById('dishForm').addEventListener('submit', function(event) {
