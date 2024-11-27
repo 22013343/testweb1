@@ -76,6 +76,17 @@
   <!-- End Matomo Code -->
 
   <script>
+    // Restrict checkbox selections to 2
+    document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+        if (selectedItems.length > 2) {
+          alert('You can only select up to 2 dishes.');
+          checkbox.checked = false; // Uncheck the last selected checkbox
+        }
+      });
+    });
+
     // Function to log checkbox selections dynamically
     function logCheckboxSelection(checkbox) {
       const dishId = checkbox.value;
@@ -89,7 +100,7 @@
       console.log(`Dish: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
     }
 
-    // Add event listeners to all checkboxes
+    // Add event listeners to all checkboxes for logging
     document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
       checkbox.addEventListener('change', () => logCheckboxSelection(checkbox));
     });
