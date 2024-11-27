@@ -1,88 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dish Selection</title>
-    <style>
-        .grid-wrapper ul {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            list-style: none;
-            padding: 0;
-            max-width: 400px;
-            margin: auto;
-        }
-        .grid-wrapper li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dish Selection</title>
+  <style>
+    .grid-wrapper ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      list-style: none;
+      padding: 0;
+      max-width: 400px;
+      margin: auto;
+    }
+    .grid-wrapper li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>RICE/NOODLES</h1>
-    <form action="#" method="post">
-        <div class="grid-wrapper">
-            <ul>
-                <li>
-                    <input type="checkbox" name="dishes" value="Yang Chow Fried Rice">
-                    Yang Chow Fried Rice
-                </li>
-                <li>
-                    <input type="checkbox" name="dishes" value="Yam Rice W Mushroom">
-                    Yam Rice W Mushroom
-                </li>
-                <li>
-                    <input type="checkbox" name="dishes" value="Thai Pineapple Fried Rice">
-                    Thai Pineapple Fried Rice
-                </li>
-                <li>
-                    <input type="checkbox" name="dishes" value="Sin Chow Mee Hoon">
-                    Sin Chow Mee Hoon
-                </li>
-                <li>
-                    <input type="checkbox" name="dishes" value="Spaghetti Aglio Olio">
-                    Spaghetti Aglio Olio(+0.80)
-                </li>
-                <li>
-                    <input type="checkbox" name="dishes" value="Fried Hong Kong Mee">
-                    Fried Hong Kong Mee
-                </li>
-                <li>
-                    <input type="checkbox" name="dishes" value="Sambal Fried Rice">
-                    Sambal Fried Rice
-                </li>
-            </ul>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
-    
-        
-    <!-- Matomo -->
-    <script>
-      var _paq = window._paq = window._paq || [];
-      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function() {
-    var u="https://tracker.neogroup.com.sg/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '11']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-  })();
-    </script>
-<!-- End Matomo Code -->
-    <script>
-        // Function to Track Checkbox Selections
-        function trackDishSelection(checkbox) {
-            var dishName = checkbox.nextSibling.textContent.trim(); // Get the text of the dish
-            var action = checkbox.checked ? 'Selected' : 'Deselected'; // Track whether selected or deselected
-            _paq.push(['trackEvent', 'Dish Selection', action, dishName]);
-            console.log(`Dish: ${dishName}, Action: ${action}`); // For debugging
-        }
-    </script>
+  <h1>RICE/NOODLES</h1>
+  <form id="dishForm">
+    <div class="grid-wrapper">
+      <ul>
+        <li>
+          <input type="checkbox" name="dishes" value="Yang Chow Fried Rice" data-category="Rice" data-price="8.50">
+          Yang Chow Fried Rice
+        </li>
+        <li>
+          <input type="checkbox" name="dishes" value="Yam Rice W Mushroom" data-category="Rice" data-price="7.50">
+          Yam Rice W Mushroom
+        </li>
+        <li>
+          <input type="checkbox" name="dishes" value="Thai Pineapple Fried Rice" data-category="Rice" data-price="9.00">
+          Thai Pineapple Fried Rice
+        </li>
+        <li>
+          <input type="checkbox" name="dishes" value="Sin Chow Mee Hoon" data-category="Noodles" data-price="7.80">
+          Sin Chow Mee Hoon
+        </li>
+        <li>
+          <input type="checkbox" name="dishes" value="Spaghetti Aglio Olio" data-category="Pasta" data-price="10.80">
+          Spaghetti Aglio Olio(+0.80)
+        </li>
+        <li>
+          <input type="checkbox" name="dishes" value="Fried Hong Kong Mee" data-category="Noodles" data-price="8.00">
+          Fried Hong Kong Mee
+        </li>
+        <li>
+          <input type="checkbox" name="dishes" value="Sambal Fried Rice" data-category="Rice" data-price="9.50">
+          Sambal Fried Rice
+        </li>
+      </ul>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://tracker.neogroup.com.sg/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '11']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+  <script>
+    // Function to log checkbox selections dynamically
+    function logCheckboxSelection(checkbox) {
+      const dishId = checkbox.value;
+      const categoryName = checkbox.getAttribute('data-category');
+      const price = parseFloat(checkbox.getAttribute('data-price'));
+      const action = checkbox.checked ? 'Selected' : 'Deselected';
+
+      // Push to Matomo
+      _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
+      _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); // Track product view
+      console.log(`Dish: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
+    }
+
+    // Add event listeners to all checkboxes
+    document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
+      checkbox.addEventListener('change', () => logCheckboxSelection(checkbox));
+    });
+
+    // Track form submissions
+    document.getElementById('dishForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent actual form submission for demo purposes
+
+      // Get selected checkboxes
+      const selectedItems = Array.from(document.querySelectorAll('input[name="dishes"]:checked'));
+      if (selectedItems.length > 0) {
+        selectedItems.forEach(item => {
+          const dishId = item.value;
+          const categoryName = item.getAttribute('data-category');
+          const price = parseFloat(item.getAttribute('data-price'));
+
+          _paq.push(['trackEvent', 'Dish Selection', 'Form Submit', dishId, price]);
+          console.log(`Form submitted: Dish: ${dishId}, Category: ${categoryName}, Price: $${price}`);
+        });
+      } else {
+        console.warn('No dishes selected');
+      }
+    });
+  </script>
 </body>
 </html>
