@@ -81,13 +81,21 @@
       checkbox.addEventListener('change', () => {
         const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
         
-        // If more than 2 selected, uncheck the last checkbox and remove it from the cart
+        // If more than 2 selected, uncheck the last checkbox and track its restriction-driven deselection
         if (selectedItems.length > 2) {
           alert('You can only select up to 2 dishes.');
+          
+          // Log a restriction-driven deselection event
+          const dishId = checkbox.value;
+          const categoryName = checkbox.getAttribute('data-category');
+          const price = parseFloat(checkbox.getAttribute('data-price'));
+          _paq.push(['trackEvent', 'Dish Selection', 'Restricted Deselection', dishId, price]);
+          console.log(`Restricted deselection tracked for: ${dishId}`);
+
+          // Uncheck the restricted dish
           checkbox.checked = false;
 
-          // Remove the deselected dish from Matomo tracking
-          const dishId = checkbox.value;
+          // Remove the restricted dish from the cart
           _paq.push(['removeEcommerceItem', dishId]);
           console.log(`Dish removed from cart: ${dishId}`);
         } else {
@@ -109,9 +117,10 @@
         _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); // Add to cart
         console.log(`Dish added to cart: ${dishId}, Category: ${categoryName}, Price: $${price}`);
       } else {
-        // Remove the product from the cart when deselected
+        // Log manual deselection and remove the product from the cart
+        _paq.push(['trackEvent', 'Dish Selection', 'Manual Deselection', dishId, price]);
         _paq.push(['removeEcommerceItem', dishId]);
-        console.log(`Dish removed from cart: ${dishId}`);
+        console.log(`Dish manually deselected and removed from cart: ${dishId}`);
       }
     }
 
