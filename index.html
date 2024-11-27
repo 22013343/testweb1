@@ -107,7 +107,7 @@
 
     // Track form submissions
     document.getElementById('dishForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent actual form submission for demo purposes
+      event.preventDefault(); // Prevent the default form submission for custom handling
 
       // Get selected checkboxes
       const selectedItems = Array.from(document.querySelectorAll('input[name="dishes"]:checked'));
@@ -123,6 +123,11 @@
       } else {
         console.warn('No dishes selected');
       }
+
+      // Refresh the page after 1 second (allows any final logs to complete)
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     });
   </script>
 </body>
