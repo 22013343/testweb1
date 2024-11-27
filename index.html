@@ -127,13 +127,14 @@
         });
 
         // Simulate an order tracking event (optional)
-        const totalValue = selectedItems.reduce((total, item) => total + parseFloat(item.getAttribute('data-price')), 0);
-        _paq.push(['trackEcommerceOrder', 'ORDER123', totalValue]); // Replace ORDER123 with dynamic order ID
+       const totalValue = selectedItems.reduce((total, item) => total + parseFloat(item.getAttribute('data-price')), 0);
+      const orderId = `ORDER-${Math.floor(Math.random() * 1000000)}`; // Generate dynamic order ID
 
-        console.log('Form submitted and eCommerce data sent.');
-      } else {
-        console.warn('No dishes selected');
-      }
+    _paq.push(['trackEcommerceOrder', orderId, totalValue]);
+    console.log(`Order tracked: ID=${orderId}, Total=$${totalValue}`);
+  } else {
+    console.warn('No dishes selected');
+  }
 
       // Refresh the page after 1 second
       setTimeout(() => {
