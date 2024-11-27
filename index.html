@@ -127,7 +127,13 @@
         });
 
         // Simulate an order tracking event (optional)
-       const totalValue = selectedItems.reduce((total, item) => total + parseFloat(item.getAttribute('data-price')), 0);
+       const totalValue = selectedItems.reduce((total, item) => {
+        // Only include checkboxes that are currently selected
+        if (item.checked) {
+        return total + parseFloat(item.getAttribute('data-price'));
+        }
+          return total;
+        }, 0);
       const orderId = `ORDER-${Math.floor(Math.random() * 1000000)}`; // Generate dynamic order ID
 
     _paq.push(['trackEcommerceOrder', orderId, totalValue]);
