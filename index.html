@@ -87,7 +87,7 @@
       });
     });
 
-    // Function to log checkbox selections dynamically
+    // Function to log checkbox selections dynamically and push eCommerce data to Matomo
     function logCheckboxSelection(checkbox) {
       const dishId = checkbox.value;
       const categoryName = checkbox.getAttribute('data-category');
@@ -96,8 +96,13 @@
 
       // Push to Matomo
       _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
-      _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); // Track product view
-      console.log(`Dish: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
+
+      if (checkbox.checked) {
+        // Track the eCommerce product view when selected
+        _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); // Log product view
+        _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); // Add to cart simulation
+        console.log(`Dish: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
+      }
     }
 
     // Add event listeners to all checkboxes for logging
@@ -117,14 +122,20 @@
           const categoryName = item.getAttribute('data-category');
           const price = parseFloat(item.getAttribute('data-price'));
 
-          _paq.push(['trackEvent', 'Dish Selection', 'Form Submit', dishId, price]);
-          console.log(`Form submitted: Dish: ${dishId}, Category: ${categoryName}, Price: $${price}`);
+          // Track purchase (for example purposes)
+          _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]);
         });
+
+        // Simulate an order tracking event (optional)
+        const totalValue = selectedItems.reduce((total, item) => total + parseFloat(item.getAttribute('data-price')), 0);
+        _paq.push(['trackEcommerceOrder', 'ORDER123', totalValue]); // Replace ORDER123 with dynamic order ID
+
+        console.log('Form submitted and eCommerce data sent.');
       } else {
         console.warn('No dishes selected');
       }
 
-      // Refresh the page after 1 second (allows any final logs to complete)
+      // Refresh the page after 1 second
       setTimeout(() => {
         window.location.reload();
       }, 1000);
