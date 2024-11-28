@@ -76,92 +76,92 @@
   <!-- End Matomo Code -->
 
   <script>
-// Restrict checkbox selections to 2
-let validSelections = [];
+  // Restrict checkbox selections to 2
+  let validSelections = []; // Track validly selected dishes
 
-document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
-  checkbox.addEventListener('change', () => {
-    const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
-
-    if (selectedItems.length > 2) {
-      alert('You can only select up to 2 dishes.');
-      checkbox.checked = false; // Uncheck the last selected checkbox
-
-      // Remove forcibly deselected checkbox from validSelections
-      validSelections = validSelections.filter(item => item !== checkbox);
-    } else {
-      // Add the newly checked item to validSelections
-      if (checkbox.checked) {
-        validSelections.push(checkbox);
+  document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+      if (selectedItems.length > 2) {
+        alert('You can only select up to 2 dishes.');
+        checkbox.checked = false; // Uncheck the last selected checkbox
+        logCheckboxSelection(checkbox, true); // Log as a forced deselection
       } else {
-        // Remove from validSelections if manually unchecked
-        validSelections = validSelections.filter(item => item !== checkbox);
+        logCheckboxSelection(checkbox);
+      }
+    });
+  });
+
+  // Function to log checkbox selections dynamically and handle cart updates
+  function logCheckboxSelection(checkbox, isForcedDeselection = false) {
+    const dishId = checkbox.value;
+    const categoryName = checkbox.getAttribute('data-category');
+    const price = parseFloat(checkbox.getAttribute('data-price'));
+    const action = checkbox.checked ? 'Selected' : 'Deselected';
+
+    // Log the event
+    _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
+
+    if (checkbox.checked) {
+      // Track product view and add to cart when selected
+      _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); // Log product view
+      _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); // Add to cart
+      console.log(`Dish added to cart: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
+
+      // Add to validSelections array
+      if (!validSelections.includes(checkbox)) {
+        validSelections.push(checkbox);
+      }
+    } else {
+      // Remove the item from the cart when deselected
+      _paq.push(['removeEcommerceItem', dishId]);
+      console.log(`Dish removed from cart: ${dishId}, Action: ${action}`);
+
+      // Remove from validSelections array
+      validSelections = validSelections.filter(item => item !== checkbox);
+
+      if (isForcedDeselection) {
+        console.log(`Dish forcibly deselected due to restriction: ${dishId}`);
       }
     }
 
-    console.log('Valid selections:', validSelections.map(item => item.value));
-    logCheckboxSelection(checkbox); // Log selection or deselection
-  });
-});
-
-// Function to log checkbox selections dynamically
-function logCheckboxSelection(checkbox) {
-  const dishId = checkbox.value;
-  const categoryName = checkbox.getAttribute('data-category');
-  const price = parseFloat(checkbox.getAttribute('data-price'));
-  const action = checkbox.checked ? 'Selected' : 'Deselected';
-
-  // Log the event
-  _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
-
-  if (checkbox.checked) {
-    // Track product view and add to cart
-    _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); 
-    _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); 
-    console.log(`Dish: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
-  } else {
-    console.log(`Dish: ${dishId} was deselected.`);
+    console.log('Current valid selections:', validSelections.map(item => item.value));
   }
-}
 
-// Track form submissions
-document.getElementById('dishForm').addEventListener('submit', function(event) {
-  event.preventDefault(); // Prevent the default form submission
+  // Track form submissions
+  document.getElementById('dishForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-  // Calculate total value from validSelections
-  const totalValue = validSelections.reduce((total, item) => {
-    return total + parseFloat(item.getAttribute('data-price'));
-  }, 0);
+    // Calculate total value from validSelections
+    const totalValue = validSelections.reduce((total, item) => {
+      return total + parseFloat(item.getAttribute('data-price'));
+    }, 0);
 
-  if (validSelections.length > 0) {
-    const orderId = `ORDER-${Math.floor(Math.random() * 1000000)}`; // Generate dynamic order ID
+    if (validSelections.length > 0) {
+      const orderId = `ORDER-${Math.floor(Math.random() * 1000000)}`; // Generate dynamic order ID
 
-    // Log valid selections to Matomo
-    validSelections.forEach(item => {
-      const dishId = item.value;
-      const categoryName = item.getAttribute('data-category');
-      const price = parseFloat(item.getAttribute('data-price'));
+      // Log valid selections to Matomo
+      validSelections.forEach(item => {
+        const dishId = item.value;
+        const categoryName = item.getAttribute('data-category');
+        const price = parseFloat(item.getAttribute('data-price'));
 
-      _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]);
-      console.log(`Added to cart: ${dishId}`);
-    });
+        _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]);
+        console.log(`Added to cart: ${dishId}`);
+      });
 
-    // Track the eCommerce order
-    try {
+      // Track the eCommerce order
       _paq.push(['trackEcommerceOrder', orderId, totalValue]);
       console.log(`Order tracked: ID=${orderId}, Total=$${totalValue}`);
-    } catch (error) {
-      console.error('Error logging eCommerce order to Matomo:', error);
+    } else {
+      console.warn('No valid dishes selected');
     }
-  } else {
-    console.warn('No valid dishes selected');
-  }
 
-  // Refresh the page after 1 second
-  setTimeout(() => {
-    window.location.reload();
-  }, 1000);
-});
+    // Refresh the page after 1 second
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  });
   </script>
 </body>
 </html>
