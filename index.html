@@ -83,9 +83,21 @@
         if (selectedItems.length > 2) {
           alert('You can only select up to 2 dishes.');
           checkbox.checked = false; // Uncheck the last selected checkbox
-        }
-      });
-    });
+      // Ensure the deselected checkbox is not added to validSelections
+      validSelections = validSelections.filter(item => item !== checkbox);
+    } else {
+      // Add the newly checked item to validSelections
+      if (checkbox.checked) {
+        validSelections.push(checkbox);
+      } else {
+        // Remove from validSelections if manually unchecked
+        validSelections = validSelections.filter(item => item !== checkbox);
+      }
+    }
+
+    console.log('Valid selections:', validSelections.map(item => item.value));
+  });
+});
 
     // Function to log checkbox selections dynamically and push eCommerce data to Matomo
     function logCheckboxSelection(checkbox) {
