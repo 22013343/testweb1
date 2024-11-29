@@ -3,8 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dish Selection</title>
+  <title>Neo Garden Catering - Bringing People Together</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background-color: #FAF8F5;
+      color: #C3102F;
+      font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 10px 20px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    nav {
+      background-color: #f5f5f5;
+      color: grey;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+    }
+    nav a {
+      color: grey;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
     .grid-wrapper ul {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -19,149 +51,251 @@
       align-items: center;
       gap: 10px;
     }
+    .grid-wrapper {
+      margin-bottom: 30px;
+    }
   </style>
 </head>
 <body>
-  <h1>RICE/NOODLES</h1>
-  <form id="dishForm">
-    <div class="grid-wrapper">
-      <ul>
-        <li>
-          <input type="checkbox" name="dishes" value="Yang Chow Fried Rice" data-category="Rice" data-price="8.50">
-          Yang Chow Fried Rice
-        </li>
-        <li>
-          <input type="checkbox" name="dishes" value="Yam Rice W Mushroom" data-category="Rice" data-price="7.50">
-          Yam Rice W Mushroom
-        </li>
-        <li>
-          <input type="checkbox" name="dishes" value="Thai Pineapple Fried Rice" data-category="Rice" data-price="9.00">
-          Thai Pineapple Fried Rice
-        </li>
-        <li>
-          <input type="checkbox" name="dishes" value="Sin Chow Mee Hoon" data-category="Noodles" data-price="7.80">
-          Sin Chow Mee Hoon
-        </li>
-        <li>
-          <input type="checkbox" name="dishes" value="Spaghetti Aglio Olio" data-category="Pasta" data-price="10.80">
-          Spaghetti Aglio Olio(+0.80)
-        </li>
-        <li>
-          <input type="checkbox" name="dishes" value="Fried Hong Kong Mee" data-category="Noodles" data-price="8.00">
-          Fried Hong Kong Mee
-        </li>
-        <li>
-          <input type="checkbox" name="dishes" value="Sambal Fried Rice" data-category="Rice" data-price="9.50">
-          Sambal Fried Rice
-        </li>
-      </ul>
-    </div>
-    <button type="submit">Submit</button>
-  </form>
+  <!-- Header -->
+  <header>
+    <h1>NEO GARDEN</h1>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Log In</a>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Rice/Noodles Section -->
+    <section id="rice-noodles">
+      <h1>RICE/NOODLES</h1>
+      <form id="dishForm">
+        <div class="grid-wrapper">
+          <ul>
+            <li>
+              <input type="checkbox" name="dishes" value="Yang Chow Fried Rice" data-category="Rice" data-price="0">
+              Yang Chow Fried Rice
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Yam Rice W Mushroom" data-category="Rice" data-price="0">
+              Yam Rice W Mushroom
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Thai Pineapple Fried Rice" data-category="Rice" data-price="0">
+              Thai Pineapple Fried Rice
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Sin Chow Mee Hoon" data-category="Noodles" data-price="0">
+              Sin Chow Mee Hoon
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Spaghetti Aglio Olio" data-category="Pasta" data-price="0">
+              Spaghetti Aglio Olio (+0.80)
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Fried Hong Kong Mee" data-category="Noodles" data-price="0">
+              Fried Hong Kong Mee
+            </li>
+            <li>
+              <input type="checkbox" name="dishes" value="Sambal Fried Rice" data-category="Rice" data-price="0">
+              Sambal Fried Rice
+            </li>
+          </ul>
+        </div>
+      </form>
+    </section>
+
+    <!-- Vegetables/Beancurd Section -->
+    <section id="vegetables-beancurd">
+      <h1>VEGETABLES/BEANCURD</h1>
+      <form>
+        <div class="grid-wrapper">
+          <ul>
+            <li>
+              <input type="radio" name="vegetables" value="Chap Chye w Black Fungus" data-category="Vegetables" data-price="0">
+              Chap Chye w Black Fungus
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Loh Han Vegetable" data-category="Vegetables" data-price="0">
+              Loh Han Vegetable
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Oyster Kai Lan w Mushroom" data-category="Vegetables" data-price="0">
+              Oyster Kai Lan w Mushroom
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Mushroom Broccoli" data-category="Vegetables" data-price="0">
+              Mushroom Broccoli
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Neo's Tofu w Broccoli" data-category="Vegetables" data-price="0">
+              Neo's Tofu w Broccoli (+0.80)
+            </li>
+            <li>
+              <input type="radio" name="vegetables" value="Braised Beancurd" data-category="Beancurd" data-price="0">
+              Braised Beancurd
+            </li>
+          </ul>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- Submit Button -->
+  <div id="submit" style="text-align: center; margin: 20px;">
+    <button id="submitButton" style="padding: 10px 20px;">Submit Selection</button>
+  </div>
 
   <!-- Matomo -->
   <script>
     var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     (function() {
       var u="https://tracker.neogroup.com.sg/";
       _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '11']);
+      _paq.push(['setSiteId', '12']);
       var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
       g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
     })();
-  </script>
-  <!-- End Matomo Code -->
 
-  <script>
-  // Restrict checkbox selections to 2
-  let validSelections = []; // Track validly selected dishes
+  // Maintain a list of valid checkbox selections (max 2)
+  let validDishSelections = [];
 
+  // Add event listeners for checkboxes
   document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
+    checkbox.addEventListener('change', function () {
       const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+
       if (selectedItems.length > 2) {
         alert('You can only select up to 2 dishes.');
-        checkbox.checked = false; // Uncheck the last selected checkbox
-        logCheckboxSelection(checkbox, true); // Log as a forced deselection
+        this.checked = false; // Force deselection of the last selected checkbox
+        logCheckboxEvent(this, 'Deselected', true); // Log force deselection
+        updateCart(this, 'deselected', 'dish'); // Remove from the cart
       } else {
-        logCheckboxSelection(checkbox);
+        logCheckboxEvent(this, this.checked ? 'Selected' : 'Deselected', false); // Log user action
+        updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
       }
     });
   });
 
-  // Function to log checkbox selections dynamically and handle cart updates
-  function logCheckboxSelection(checkbox, isForcedDeselection = false) {
+  // Function to log checkbox events
+  function logCheckboxEvent(checkbox, action, isForced) {
     const dishId = checkbox.value;
     const categoryName = checkbox.getAttribute('data-category');
     const price = parseFloat(checkbox.getAttribute('data-price'));
-    const action = checkbox.checked ? 'Selected' : 'Deselected';
 
-    // Log the event
-    _paq.push(['trackEvent', 'Dish Selection', action, dishId, price]);
-
-    if (checkbox.checked) {
-      // Track product view and add to cart when selected
-      _paq.push(['setEcommerceView', dishId, dishId, categoryName, price]); // Log product view
-      _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]); // Add to cart
-      console.log(`Dish added to cart: ${dishId}, Action: ${action}, Category: ${categoryName}, Price: $${price}`);
-
-      // Add to validSelections array
-      if (!validSelections.includes(checkbox)) {
-        validSelections.push(checkbox);
-      }
-    } else {
-      // Remove the item from the cart when deselected
-      _paq.push(['removeEcommerceItem', dishId]);
-      console.log(`Dish removed from cart: ${dishId}, Action: ${action}`);
-
-      // Remove from validSelections array
-      validSelections = validSelections.filter(item => item !== checkbox);
-
-      if (isForcedDeselection) {
-        console.log(`Dish forcibly deselected due to restriction: ${dishId}`);
-      }
-    }
-
-    console.log('Current valid selections:', validSelections.map(item => item.value));
+    // Track the event in Matomo
+    const eventLabel = isForced ? 'Force Deselection' : action;
+    _paq.push(['trackEvent', 'Dish Selection', eventLabel, dishId, price]);
+    console.log(`Event tracked: ${eventLabel} - ${dishId}, Category: ${categoryName}, Price: $${price}`);
   }
 
-  // Track form submissions
-  document.getElementById('dishForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+// Maintain a valid vegetable selection (radio buttons)
+let validVegSelection = null;
 
-    // Calculate total value from validSelections
-    const totalValue = validSelections.reduce((total, item) => {
-      return total + parseFloat(item.getAttribute('data-price'));
-    }, 0);
+// Add event listeners for radio buttons
+document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
+  radio.addEventListener('change', function () {
+    // Log the deselection of the previously selected vegetable, if applicable
+    if (validVegSelection && validVegSelection !== this) {
+      const previousVegId = validVegSelection.value;
+      const previousCategoryName = validVegSelection.getAttribute('data-category');
+      const previousPrice = parseFloat(validVegSelection.getAttribute('data-price'));
 
-    if (validSelections.length > 0) {
-      const orderId = `ORDER-${Math.floor(Math.random() * 1000000)}`; // Generate dynamic order ID
+      // Log deselection event
+      _paq.push(['trackEvent', 'Vegetable Selection', 'Deselected', previousVegId, previousPrice]);
+      console.log(`Event tracked: Deselected - ${previousVegId}, Category: ${previousCategoryName}, Price: $${previousPrice}`);
 
-      // Log valid selections to Matomo
-      validSelections.forEach(item => {
-        const dishId = item.value;
-        const categoryName = item.getAttribute('data-category');
-        const price = parseFloat(item.getAttribute('data-price'));
-
-        _paq.push(['addEcommerceItem', dishId, dishId, categoryName, price, 1]);
-        console.log(`Added to cart: ${dishId}`);
-      });
-
-      // Track the eCommerce order
-      _paq.push(['trackEcommerceOrder', orderId, totalValue]);
-      console.log(`Order tracked: ID=${orderId}, Total=$${totalValue}`);
-    } else {
-      console.warn('No valid dishes selected');
+      // Remove the previously selected vegetable from the eCommerce cart
+      _paq.push(['removeEcommerceItem', previousVegId]);
+      console.log(`Vegetable removed from cart: ${previousVegId}`);
     }
 
-    // Refresh the page after 1 second
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    // Update the valid vegetable selection
+    validVegSelection = this;
+
+    // Log the selection of the new vegetable
+    const newVegId = this.value;
+    const newCategoryName = this.getAttribute('data-category');
+    const newPrice = parseFloat(this.getAttribute('data-price'));
+
+    // Log selection event
+    _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', newVegId, newPrice]);
+    console.log(`Event tracked: Selected - ${newVegId}, Category: ${newCategoryName}, Price: $${newPrice}`);
+
+    // Add the newly selected vegetable to the eCommerce cart
+    _paq.push(['addEcommerceItem', newVegId, newVegId, newCategoryName, newPrice, 1]);
+    console.log(`Vegetable added to cart: ${newVegId}, Price: ${newPrice}`);
   });
+});
+
+  // Function to handle cart updates dynamically
+  function updateCart(item, action, type) {
+    const id = item.value;
+    const categoryName = item.getAttribute('data-category');
+    const price = parseFloat(item.getAttribute('data-price'));
+
+    if (action === 'selected') {
+      // Add to eCommerce cart
+      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
+      console.log(`${type} added to cart: ${id}, Price: ${price}`);
+      if (type === 'dish') validDishSelections.push(item);
+    } else if (action === 'deselected') {
+      // Remove from eCommerce cart
+      _paq.push(['removeEcommerceItem', id]);
+      console.log(`${type} removed from cart: ${id}`);
+      if (type === 'dish') {
+        validDishSelections = validDishSelections.filter(dish => dish !== item);
+      }
+    }
+
+    validateCart();
+  }
+
+  // Ensure the cart always reflects valid quantities and selections
+  function validateCart() {
+    // Ensure only 2 dishes are valid
+    if (validDishSelections.length > 2) {
+      const removedDish = validDishSelections.shift(); // Remove the earliest added dish
+      removedDish.checked = false;
+      updateCart(removedDish, 'deselected', 'dish');
+    }
+
+    // Log current cart state for debugging
+    console.log('Current valid dishes:', validDishSelections.map(dish => dish.value));
+    if (validVegSelection) {
+      console.log('Current valid vegetable:', validVegSelection.value);
+    }
+  }
+
+// Submit Form
+document.getElementById('submitButton').addEventListener('click', function () {
+  const orderId = `ORDER-${Date.now()}`;
+  const validDishes = validDishSelections.map(dish => ({
+    id: dish.value,
+    category: dish.getAttribute('data-category'),
+    price: 0 // Always $0
+  }));
+
+  const validVegetable = validVegSelection
+    ? {
+        id: validVegSelection.value,
+        category: validVegSelection.getAttribute('data-category'),
+        price: 0 // Always $0
+      }
+    : null;
+
+  // Store the data in local storage
+  localStorage.setItem('cartItems', JSON.stringify({ validDishes, validVegetable, orderId }));
+
+  // Redirect to the cart page
+  window.location.href = 'cart.html';
+});
   </script>
 </body>
-</html>
+</html> 
