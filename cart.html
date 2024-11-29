@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart - Neo Garden Catering</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #FAF8F5;
+    }
+    header {
+      background-color: #C3102F;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #C3102F;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    table th {
+      background-color: #f2f2f2;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      color: white;
+      background-color: #C3102F;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .button:hover {
+      background-color: #a10e26;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Your Cart</h1>
+  </header>
+  <div class="container">
+    <h1>Order Summary</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Category</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody id="cart-items">
+        <!-- Cart items will be dynamically populated -->
+      </tbody>
+    </table>
+    <div style="text-align: center;">
+      <a href="index.html" class="button">Continue Shopping</a>
+      <a href="checkout.html" class="button">Proceed to Checkout</a>
+    </div>
+  </div>
+
+  <script>
+    // Retrieve cart data from local storage
+    const cartData = JSON.parse(localStorage.getItem('cartItems')) || { validDishes: [], validVegetable: null };
+
+    const cartTableBody = document.getElementById('cart-items');
+
+    // Populate the cart table
+    cartData.validDishes.forEach(dish => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${dish.id}</td>
+        <td>${dish.category}</td>
+        <td>$${dish.price.toFixed(2)}</td>
+      `;
+      cartTableBody.appendChild(row);
+    });
+
+    if (cartData.validVegetable) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${cartData.validVegetable.id}</td>
+        <td>${cartData.validVegetable.category}</td>
+        <td>$${cartData.validVegetable.price.toFixed(2)}</td>
+      `;
+      cartTableBody.appendChild(row);
+    }
+  </script>
+</body>
+</html>
