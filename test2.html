@@ -9,7 +9,6 @@
         const selectedItems = document.querySelectorAll('.checkbox-success input[type="checkbox"].valid:checked');
 
         if (selectedItems.length > 2) {
-          // If the system already handles the alert and deselection, we just log the event
           this.checked = false; // Ensure the checkbox is deselected
           logEvent(this, 'Dish Selection', 'Forced Deselection', true); // Log forced deselection
           updateCart(this, 'deselected', 'dish'); // Update cart
