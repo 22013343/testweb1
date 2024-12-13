@@ -1,0 +1,87 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let validDishSelections = []; // Track selected dishes
+    let validVegSelection = null; // Track selected vegetable
+
+    // Add event listeners for dish checkboxes (checkbox-success class)
+    document.querySelectorAll('.checkbox-success input[type="checkbox"].valid').forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        const selectedItems = document.querySelectorAll('.checkbox-success input[type="checkbox"].valid:checked');
+
+        if (selectedItems.length > 2) {
+          // If the system already handles the alert and deselection, we just log the event
+          this.checked = false; // Ensure the checkbox is deselected
+          logEvent(this, 'Dish Selection', 'Forced Deselection', true); // Log forced deselection
+          updateCart(this, 'deselected', 'dish'); // Update cart
+        } else {
+          // Log user action
+          const action = this.checked ? 'Selected' : 'Deselected';
+          logEvent(this, 'Dish Selection', action, false); // Log selection/deselection
+          updateCart(this, action.toLowerCase(), 'dish'); // Update cart
+        }
+      });
+    });
+
+    // Add event listeners for vegetable radio buttons (radio-success class)
+    document.querySelectorAll('.radio-success input[type="radio"].valid').forEach(radio => {
+      radio.addEventListener('change', function () {
+        if (validVegSelection && validVegSelection !== this) {
+          // Log deselection of the previously selected vegetable
+          logEvent(validVegSelection, 'Vegetable Selection', 'Deselected', false);
+          updateCart(validVegSelection, 'deselected', 'vegetable'); // Update cart
+        }
+
+        // Log selection of the new vegetable
+        validVegSelection = this;
+        logEvent(this, 'Vegetable Selection', 'Selected', false);
+        updateCart(this, 'selected', 'vegetable'); // Update cart
+      });
+    });
+
+    // Function to log events in Matomo
+    function logEvent(element, category, action, isForced) {
+      const id = element.value || element.getAttribute('_bl_6e0c1c14-c736-4ce4-afc2-1ab74b224414') || 'unknown';
+      const categoryName = element.getAttribute('data-category') || 'Unknown Category';
+      const price = parseFloat(element.getAttribute('data-price')) || 0;
+      const eventLabel = isForced ? `${action} - Forced` : action;
+
+      _paq.push(['trackEvent', category, eventLabel, id, price]);
+      console.log(`Event tracked: Category: ${category}, Action: ${eventLabel}, ID: ${id}, Price: ${price}`);
+    }
+
+    // Function to update the eCommerce cart in Matomo
+    function updateCart(item, action, type) {
+      const id = item.value || item.getAttribute('_bl_6e0c1c14-c736-4ce4-afc2-1ab74b224414') || 'unknown';
+      const categoryName = item.getAttribute('data-category') || 'Unknown Category';
+      const price = parseFloat(item.getAttribute('data-price')) || 0;
+
+      if (action === 'selected') {
+        _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
+        console.log(`${type} added to cart: ID: ${id}, Price: ${price}`);
+        if (type === 'dish') validDishSelections.push(item);
+      } else if (action === 'deselected') {
+        _paq.push(['removeEcommerceItem', id]);
+        console.log(`${type} removed from cart: ID: ${id}`);
+        if (type === 'dish') {
+          validDishSelections = validDishSelections.filter(dish => dish !== item);
+        }
+      }
+
+      validateCart(); // Ensure the cart remains valid
+    }
+
+    // Function to validate the cart (e.g., enforce max dish selection limit)
+    function validateCart() {
+      if (validDishSelections.length > 2) {
+        const removedDish = validDishSelections.shift(); // Remove the earliest selected dish
+        removedDish.checked = false; // Uncheck the checkbox
+        updateCart(removedDish, 'deselected', 'dish'); // Update cart
+      }
+
+      console.log('Current valid dishes:', validDishSelections.map(dish => dish.value || dish.getAttribute('_bl_6e0c1c14-c736-4ce4-afc2-1ab74b224414')));
+      if (validVegSelection) {
+        console.log('Current valid vegetable:', validVegSelection.value);
+      }
+    }
+  });
+</script>
