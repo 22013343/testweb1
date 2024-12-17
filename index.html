@@ -205,10 +205,11 @@
               Braised Beancurd
             </li>
           </ul>
-        </div>
          <section>
+           
       <section>
       <h2>Fish (White Dory)</h2>
+        <div class="grid-wrapper">
       <ul id="fish-section">
         <li><input type="radio" name="fish" value="Spring Onion Fish" data-category="Fish" data-price="0"> Spring Onion Fish</li>
         <li><input type="radio" name="fish" value="Cereal Fish" data-category="Fish" data-price="0"> Cereal Fish</li>
@@ -218,6 +219,7 @@
 
     <section>
       <h2>Chicken</h2>
+        <div class="grid-wrapper">
       <ul id="chicken-section">
         <li><input type="radio" name="chicken" value="Thai Mango Chicken" data-category="Chicken" data-price="0"> Thai Mango Chicken</li>
         <li><input type="radio" name="chicken" value="Signature Curry Chicken" data-category="Chicken" data-price="1.20"> Signature Curry Chicken (+1.20)</li>
@@ -226,6 +228,7 @@
 
     <section>
       <h2>Prawn</h2>
+        <div class="grid-wrapper">
       <ul id="prawn-section">
         <li><input type="radio" name="prawn" value="Thai Style Prawn" data-category="Prawn" data-price="0"> Thai Style Prawn</li>
         <li><input type="radio" name="prawn" value="Cereal Prawn" data-category="Prawn" data-price="2.00"> Cereal Prawn (+2.00)</li>
@@ -234,6 +237,7 @@
 
     <section>
       <h2>Deep Fried</h2>
+        <div class="grid-wrapper">
       <ul id="deep-fried-section">
         <li><input type="radio" name="deep_fried" value="Sotong Ball" data-category="Deep Fried" data-price="0"> Sotong Ball</li>
         <li><input type="radio" name="deep_fried" value="Breaded Scallop" data-category="Deep Fried" data-price="0"> Breaded Scallop</li>
@@ -242,6 +246,7 @@
 
     <section>
       <h2>Dessert</h2>
+        <div class="grid-wrapper">
       <ul id="dessert-section">
         <li><input type="radio" name="dessert" value="Chin Chow w Longan" data-category="Dessert" data-price="0"> Chin Chow w Longan</li>
         <li><input type="radio" name="dessert" value="Green Bean Soup" data-category="Dessert" data-price="0"> Green Bean Soup</li>
@@ -250,12 +255,11 @@
 
     <section>
       <h2>Drinks</h2>
+        <div class="grid-wrapper">
       <ul id="drinks-section">
         <li><input type="radio" name="drinks" value="Homemade Herbal Drink" data-category="Drinks" data-price="1.00"> Homemade Herbal Drink (+1.00)</li>
         <li><input type="radio" name="drinks" value="Orange" data-category="Drinks" data-price="0"> Orange</li>
       </ul>
-    </section>
-  </div>
       </form>
     </section>
   </div>
@@ -264,103 +268,149 @@
   <div id="submit" style="text-align: center; margin: 20px;">
     <button id="submitButton" style="padding: 10px 20px;">Submit Selection</button>
   </div>
-
   <!-- Matomo -->
 <script>
-  // Initialize storage for selections
-  let selectedItems = {
-    vegetables: null,
-    fish: null,
-    chicken: null,
-    prawn: null,
-    deep_fried: null,
-    dessert: null,
-    drinks: null,
-  };
+  
+// Maintain a list of valid checkbox selections (max 2)
+let validDishSelections = [];
 
-  // Function to add event listeners for radio buttons
-  function setupRadioValidation(sectionName) {
-    document.querySelectorAll(`input[name="${sectionName}"]`).forEach(radio => {
-      radio.addEventListener('change', function () {
-        const category = this.getAttribute('data-category');
-        const value = this.value;
-        const price = parseFloat(this.getAttribute('data-price'));
+// Maintain selections for radio button sections
+let validSelections = {
+  vegetables: null,
+  fish: null,
+  chicken: null,
+  prawn: null,
+  deep_fried: null,
+  dessert: null,
+  drinks: null,
+};
 
-        // Deselect previous choice
-        if (selectedItems[sectionName] && selectedItems[sectionName] !== this) {
-          const prev = selectedItems[sectionName];
-          const prevValue = prev.value;
-          console.log(`Deselected: ${prevValue}`);
-          _paq.push(['trackEvent', category, 'Deselected', prevValue, prev.getAttribute('data-price')]);
-          _paq.push(['removeEcommerceItem', prevValue]);
-        }
+// Add event listeners for checkboxes (Rice/Noodles)
+document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
+  checkbox.addEventListener('change', function () {
+    const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
 
-        // Update selection
-        selectedItems[sectionName] = this;
-        console.log(`Selected: ${value} (${category})`);
-        _paq.push(['trackEvent', category, 'Selected', value, price]);
-        _paq.push(['addEcommerceItem', value, value, category, price, 1]);
-      });
+    if (selectedItems.length > 2) {
+      alert('You can only select up to 2 dishes.');
+      this.checked = false; // Force deselection
+      logCheckboxEvent(this, 'Deselected', true);
+      updateCart(this, 'deselected', 'dish');
+    } else {
+      logCheckboxEvent(this, this.checked ? 'Selected' : 'Deselected', false);
+      updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
+    }
+  });
+});
+
+// Add event listeners for radio buttons (Additional Sections)
+const radioCategories = ['vegetables', 'fish', 'chicken', 'prawn', 'deep_fried', 'dessert', 'drinks'];
+radioCategories.forEach(category => {
+  document.querySelectorAll(`input[name="${category}"]`).forEach(radio => {
+    radio.addEventListener('change', function () {
+      // Deselect previously selected option
+      if (validSelections[category] && validSelections[category] !== this) {
+        const previous = validSelections[category];
+        console.log(`Deselected: ${previous.value}`);
+        _paq.push(['trackEvent', `${category} Selection`, 'Deselected', previous.value, 0]);
+        _paq.push(['removeEcommerceItem', previous.value]);
+      }
+
+      // Update selection
+      validSelections[category] = this;
+      const newValue = this.value;
+      console.log(`Selected: ${newValue}`);
+      _paq.push(['trackEvent', `${category} Selection`, 'Selected', newValue, 0]);
+      _paq.push(['addEcommerceItem', newValue, newValue, category, 0, 1]);
     });
+  });
+});
+
+// Function to log checkbox events
+function logCheckboxEvent(checkbox, action, isForced) {
+  const dishId = checkbox.value;
+  const categoryName = checkbox.getAttribute('data-category');
+  const price = parseFloat(checkbox.getAttribute('data-price')) || 0;
+
+  const eventLabel = isForced ? 'Force Deselection' : action;
+  _paq.push(['trackEvent', 'Dish Selection', eventLabel, dishId, price]);
+  console.log(`Event tracked: ${eventLabel} - ${dishId}, Category: ${categoryName}, Price: $${price}`);
+}
+
+// Function to update the cart dynamically
+function updateCart(item, action, type) {
+  const id = item.value;
+  const categoryName = item.getAttribute('data-category');
+  const price = parseFloat(item.getAttribute('data-price')) || 0;
+
+  if (action === 'selected') {
+    _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
+    console.log(`${type} added to cart: ${id}, Price: ${price}`);
+    if (type === 'dish') validDishSelections.push(item);
+  } else if (action === 'deselected') {
+    _paq.push(['removeEcommerceItem', id]);
+    console.log(`${type} removed from cart: ${id}`);
+    if (type === 'dish') {
+      validDishSelections = validDishSelections.filter(dish => dish !== item);
+    }
   }
 
-  // Apply validation setup to all sections
-  const sections = ['vegetables', 'fish', 'chicken', 'prawn', 'deep_fried', 'dessert', 'drinks'];
-  sections.forEach(section => setupRadioValidation(section));
+  validateCart();
+}
 
-  // Submit button validation
-  document.getElementById('submitButton').addEventListener('click', function (event) {
-    let allValid = true;
+// Ensure only 2 dishes remain selected
+function validateCart() {
+  if (validDishSelections.length > 2) {
+    const removedDish = validDishSelections.shift();
+    removedDish.checked = false;
+    updateCart(removedDish, 'deselected', 'dish');
+  }
 
-    // Check that all required selections are made
-    sections.forEach(section => {
-      if (!selectedItems[section]) {
-        alert(`Please select an option for ${section.replace('_', ' ').toUpperCase()}.`);
-        allValid = false;
-      }
-    });
+  console.log('Current valid dishes:', validDishSelections.map(dish => dish.value));
+}
 
-    // Validate max dishes selection
-    if (validDishSelections.length > 2) {
-      alert('You can only select up to 2 dishes for Rice/Noodles.');
+// Submit button validation and redirection
+document.getElementById('submitButton').addEventListener('click', function () {
+  const orderId = `ORDER-${Date.now()}`;
+  const validDishes = validDishSelections.map(dish => ({
+    id: dish.value,
+    category: dish.getAttribute('data-category'),
+    price: 0,
+  }));
+
+  const validRadioSelections = {};
+  let allValid = true;
+
+  // Validate all required radio sections
+  radioCategories.forEach(category => {
+    if (!validSelections[category]) {
+      alert(`Please select an option for ${category.replace('_', ' ').toUpperCase()}.`);
       allValid = false;
+    } else {
+      validRadioSelections[category] = {
+        id: validSelections[category].value,
+        category: category,
+        price: 0,
+      };
     }
-
-    if (!allValid) {
-      event.preventDefault();
-      return;
-    }
-
-    // If all sections are valid, submit the data
-    const orderId = `ORDER-${Date.now()}`;
-    const validDishes = validDishSelections.map(dish => ({
-      id: dish.value,
-      category: dish.getAttribute('data-category'),
-      price: 0,
-    }));
-
-    const selectedDetails = sections.map(section => ({
-      category: selectedItems[section]?.getAttribute('data-category'),
-      id: selectedItems[section]?.value,
-      price: selectedItems[section]?.getAttribute('data-price'),
-    }));
-
-    // Save to local storage
-    localStorage.setItem('cartItems', JSON.stringify({
-      validDishes,
-      selectedDetails,
-      orderId,
-    }));
-
-    console.log('Order submitted successfully:', {
-      validDishes,
-      selectedDetails,
-      orderId,
-    });
-
-    // Redirect to the cart page
-    window.location.href = 'cart.html';
   });
+
+  if (!allValid) return;
+
+  // Save to localStorage
+  localStorage.setItem(
+    'cartItems',
+    JSON.stringify({
+      validDishes,
+      validSelections: validRadioSelections,
+      orderId,
+    })
+  );
+
+  console.log('Order submitted successfully:', { validDishes, validRadioSelections, orderId });
+
+  // Redirect to the cart page
+  window.location.href = 'cart.html';
+});
 </script>
 </body>
 </html> 
