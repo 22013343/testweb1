@@ -266,141 +266,101 @@
   </div>
 
   <!-- Matomo -->
-  <script>
+<script>
+  // Initialize storage for selections
+  let selectedItems = {
+    vegetables: null,
+    fish: null,
+    chicken: null,
+    prawn: null,
+    deep_fried: null,
+    dessert: null,
+    drinks: null,
+  };
 
-  // Maintain a list of valid checkbox selections (max 2)
-  let validDishSelections = [];
+  // Function to add event listeners for radio buttons
+  function setupRadioValidation(sectionName) {
+    document.querySelectorAll(`input[name="${sectionName}"]`).forEach(radio => {
+      radio.addEventListener('change', function () {
+        const category = this.getAttribute('data-category');
+        const value = this.value;
+        const price = parseFloat(this.getAttribute('data-price'));
 
-  // Add event listeners for checkboxes
-  document.querySelectorAll('input[name="dishes"]').forEach(checkbox => {
-    checkbox.addEventListener('change', function () {
-      const selectedItems = document.querySelectorAll('input[name="dishes"]:checked');
+        // Deselect previous choice
+        if (selectedItems[sectionName] && selectedItems[sectionName] !== this) {
+          const prev = selectedItems[sectionName];
+          const prevValue = prev.value;
+          console.log(`Deselected: ${prevValue}`);
+          _paq.push(['trackEvent', category, 'Deselected', prevValue, prev.getAttribute('data-price')]);
+          _paq.push(['removeEcommerceItem', prevValue]);
+        }
 
-      if (selectedItems.length > 2) {
-        alert('You can only select up to 2 dishes.');
-        this.checked = false; // Force deselection of the last selected checkbox
-        logCheckboxEvent(this, 'Deselected', true); // Log force deselection
-        updateCart(this, 'deselected', 'dish'); // Remove from the cart
-      } else {
-        logCheckboxEvent(this, this.checked ? 'Selected' : 'Deselected', false); // Log user action
-        updateCart(this, this.checked ? 'selected' : 'deselected', 'dish');
+        // Update selection
+        selectedItems[sectionName] = this;
+        console.log(`Selected: ${value} (${category})`);
+        _paq.push(['trackEvent', category, 'Selected', value, price]);
+        _paq.push(['addEcommerceItem', value, value, category, price, 1]);
+      });
+    });
+  }
+
+  // Apply validation setup to all sections
+  const sections = ['vegetables', 'fish', 'chicken', 'prawn', 'deep_fried', 'dessert', 'drinks'];
+  sections.forEach(section => setupRadioValidation(section));
+
+  // Submit button validation
+  document.getElementById('submitButton').addEventListener('click', function (event) {
+    let allValid = true;
+
+    // Check that all required selections are made
+    sections.forEach(section => {
+      if (!selectedItems[section]) {
+        alert(`Please select an option for ${section.replace('_', ' ').toUpperCase()}.`);
+        allValid = false;
       }
     });
-  });
 
-  // Function to log checkbox events
-  function logCheckboxEvent(checkbox, action, isForced) {
-    const dishId = checkbox.value;
-    const categoryName = checkbox.getAttribute('data-category');
-    const price = parseFloat(checkbox.getAttribute('data-price'));
-
-    // Track the event in Matomo
-    const eventLabel = isForced ? 'Force Deselection' : action;
-    _paq.push(['trackEvent', 'Dish Selection', eventLabel, dishId, price]);
-    console.log(`Event tracked: ${eventLabel} - ${dishId}, Category: ${categoryName}, Price: $${price}`);
-  }
-
-// Maintain a valid vegetable selection (radio buttons)
-let validVegSelection = null;
-
-// Add event listeners for radio buttons
-document.querySelectorAll('input[name="vegetables"]').forEach(radio => {
-  radio.addEventListener('change', function () {
-    // Log the deselection of the previously selected vegetable, if applicable
-    if (validVegSelection && validVegSelection !== this) {
-      const previousVegId = validVegSelection.value;
-      const previousCategoryName = validVegSelection.getAttribute('data-category');
-      const previousPrice = parseFloat(validVegSelection.getAttribute('data-price'));
-
-      // Log deselection event
-      _paq.push(['trackEvent', 'Vegetable Selection', 'Deselected', previousVegId, previousPrice]);
-      console.log(`Event tracked: Deselected - ${previousVegId}, Category: ${previousCategoryName}, Price: $${previousPrice}`);
-
-      // Remove the previously selected vegetable from the eCommerce cart
-      _paq.push(['removeEcommerceItem', previousVegId]);
-      console.log(`Vegetable removed from cart: ${previousVegId}`);
-    }
-
-    // Update the valid vegetable selection
-    validVegSelection = this;
-
-    // Log the selection of the new vegetable
-    const newVegId = this.value;
-    const newCategoryName = this.getAttribute('data-category');
-    const newPrice = parseFloat(this.getAttribute('data-price'));
-
-    // Log selection event
-    _paq.push(['trackEvent', 'Vegetable Selection', 'Selected', newVegId, newPrice]);
-    console.log(`Event tracked: Selected - ${newVegId}, Category: ${newCategoryName}, Price: $${newPrice}`);
-
-    // Add the newly selected vegetable to the eCommerce cart
-    _paq.push(['addEcommerceItem', newVegId, newVegId, newCategoryName, newPrice, 1]);
-    console.log(`Vegetable added to cart: ${newVegId}, Price: ${newPrice}`);
-  });
-});
-
-  // Function to handle cart updates dynamically
-  function updateCart(item, action, type) {
-    const id = item.value;
-    const categoryName = item.getAttribute('data-category');
-    const price = parseFloat(item.getAttribute('data-price'));
-
-    if (action === 'selected') {
-      // Add to eCommerce cart
-      _paq.push(['addEcommerceItem', id, id, categoryName, price, 1]);
-      console.log(`${type} added to cart: ${id}, Price: ${price}`);
-      if (type === 'dish') validDishSelections.push(item);
-    } else if (action === 'deselected') {
-      // Remove from eCommerce cart
-      _paq.push(['removeEcommerceItem', id]);
-      console.log(`${type} removed from cart: ${id}`);
-      if (type === 'dish') {
-        validDishSelections = validDishSelections.filter(dish => dish !== item);
-      }
-    }
-
-    validateCart();
-  }
-
-  // Ensure the cart always reflects valid quantities and selections
-  function validateCart() {
-    // Ensure only 2 dishes are valid
+    // Validate max dishes selection
     if (validDishSelections.length > 2) {
-      const removedDish = validDishSelections.shift(); // Remove the earliest added dish
-      removedDish.checked = false;
-      updateCart(removedDish, 'deselected', 'dish');
+      alert('You can only select up to 2 dishes for Rice/Noodles.');
+      allValid = false;
     }
 
-    // Log current cart state for debugging
-    console.log('Current valid dishes:', validDishSelections.map(dish => dish.value));
-    if (validVegSelection) {
-      console.log('Current valid vegetable:', validVegSelection.value);
+    if (!allValid) {
+      event.preventDefault();
+      return;
     }
-  }
 
-// Submit Form
-document.getElementById('submitButton').addEventListener('click', function () {
-  const orderId = `ORDER-${Date.now()}`;
-  const validDishes = validDishSelections.map(dish => ({
-    id: dish.value,
-    category: dish.getAttribute('data-category'),
-    price: 0 // Always $0
-  }));
+    // If all sections are valid, submit the data
+    const orderId = `ORDER-${Date.now()}`;
+    const validDishes = validDishSelections.map(dish => ({
+      id: dish.value,
+      category: dish.getAttribute('data-category'),
+      price: 0,
+    }));
 
-  const validVegetable = validVegSelection
-    ? {
-        id: validVegSelection.value,
-        category: validVegSelection.getAttribute('data-category'),
-        price: 0 // Always $0
-      }
-    : null;
+    const selectedDetails = sections.map(section => ({
+      category: selectedItems[section]?.getAttribute('data-category'),
+      id: selectedItems[section]?.value,
+      price: selectedItems[section]?.getAttribute('data-price'),
+    }));
 
-  // Store the data in local storage
-  localStorage.setItem('cartItems', JSON.stringify({ validDishes, validVegetable, orderId }));
+    // Save to local storage
+    localStorage.setItem('cartItems', JSON.stringify({
+      validDishes,
+      selectedDetails,
+      orderId,
+    }));
 
-  // Redirect to the cart page
-  window.location.href = 'cart.html';
-});
-  </script>
+    console.log('Order submitted successfully:', {
+      validDishes,
+      selectedDetails,
+      orderId,
+    });
+
+    // Redirect to the cart page
+    window.location.href = 'cart.html';
+  });
+</script>
 </body>
 </html> 
