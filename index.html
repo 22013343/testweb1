@@ -78,32 +78,6 @@
 
   gtag('config', 'G-MY7L683648');
 </script>
-    <script>
-    // Track time spent on the page
-    let pageStartTime = Date.now();
-    window.addEventListener('beforeunload', function () {
-      let timeSpent = Math.round((Date.now() - pageStartTime) / 1000); // in seconds
-      console.log(`User spent ${timeSpent} seconds on the page.`);
-      _paq.push(['trackEvent', 'Page Interaction', 'Time Spent', 'Total Seconds', timeSpent]);
-    });
-
-    // Track button click
-    document.getElementById('submitButton').addEventListener('click', function () {
-      console.log('Submit button clicked.');
-      _paq.push(['trackEvent', 'Button Click', 'Submit Selection']);
-    });
-
-    // Track scroll to bottom
-    window.addEventListener('scroll', function () {
-      let scrollTop = window.scrollY;
-      let viewportHeight = window.innerHeight;
-      let documentHeight = document.documentElement.scrollHeight;
-      if (scrollTop + viewportHeight >= documentHeight) {
-        console.log('User scrolled to the bottom.');
-        _paq.push(['trackEvent', 'Page Interaction', 'Scrolled to Bottom']);
-      }
-    });
-  </script>
   <script>
     var _paq = window._paq = window._paq || [];
     _paq.push(['trackPageView']);
