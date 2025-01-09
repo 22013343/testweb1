@@ -348,7 +348,7 @@ document.getElementById('submitButton').addEventListener('click', function () {
   const validDishes = validDishSelections.map(dish => ({
     id: dish.value,
     category: dish.getAttribute('data-category'),
-    price: 0,
+    price: parseFloat(dish.getAttribute('data-price')) || 0,
   }));
 
   const validRadioSelections = {};
@@ -362,8 +362,8 @@ document.getElementById('submitButton').addEventListener('click', function () {
     } else {
       validRadioSelections[category] = {
         id: validSelections[category].value,
-        category: category,
-        price: 0,
+        category,
+        price: parseFloat(validSelections[category].getAttribute('data-price')) || 0,
       };
     }
   });
@@ -385,6 +385,7 @@ document.getElementById('submitButton').addEventListener('click', function () {
   // Redirect to the cart page
   window.location.href = 'cart.html';
 });
+
 </script>
 </body>
 </html> 
