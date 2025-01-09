@@ -149,19 +149,29 @@ console.log(`Cart tracked with total value: $${totalValue}`);
 // Track checkout when the "Proceed to Checkout" button is clicked
 document.getElementById('proceedCheckout').addEventListener('click', function () {
   const orderId = `ORDER-${Date.now()}`;
+  const items = [...cartData.validDishes, ...Object.values(cartData.validSelections)];
 
-  // Add all items in the cart to the eCommerce order
-  cartData.validDishes.forEach(dish => {
-    _paq.push(['addEcommerceItem', dish.id, dish.id, dish.category, dish.price, 1]);
+  const totalValue = items.reduce((sum, item) => sum + item.price, 0);
+
+  // Save order data to localStorage
+  const orderData = {
+    orderId,
+    items,
+    totalValue,
+  };
+
+  localStorage.setItem('orderData', JSON.stringify(orderData));
+
+  // Track the eCommerce order in Matomo
+  items.forEach(item => {
+    _paq.push(['addEcommerceItem', item.id, item.id, item.category, item.price, 1]);
   });
-
-  Object.values(cartData.validSelections).forEach(selection => {
-    _paq.push(['addEcommerceItem', selection.id, selection.id, selection.category, selection.price, 1]);
-  });
-
-  // Track the eCommerce order
   _paq.push(['trackEcommerceOrder', orderId, totalValue]);
-  console.log(`Checkout tracked with Order ID: ${orderId}, Total Value: $${totalValue}`);
+
+  console.log(`Order saved: ID=${orderId}, Total=$${totalValue.toFixed(2)}`);
+
+  // Redirect to the Thank You page
+  window.location.href = 'thankyou.html';
 });
   </script>
 </body>
