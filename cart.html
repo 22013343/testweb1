@@ -105,16 +105,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </script>
 
   <script>
-  var _paq = window._paq = window._paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="https://tracker.neogroup.com.sg/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '11']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-  })();
+(function() {
+    var _paq = window._paq = window._paq || [];
+    
+    // Function to track the current page
+    function trackCurrentPage() {
+        _paq.push(['setCustomUrl', window.location.href]);
+        _paq.push(['trackPageView']);
+    }
+
+    // Track the initial page load
+    trackCurrentPage();
+
+    // Listen for page changes (for SPAs)
+    window.addEventListener('popstate', trackCurrentPage); // Tracks changes in the browser's history
+    window.addEventListener('hashchange', trackCurrentPage); // Tracks changes in URL hash fragments
+
+    // Load the Matomo tracker
+    (function() {
+        var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+    })();
+})();
 
   // Retrieve cart data from local storage
 const cartData = JSON.parse(localStorage.getItem('cartItems')) || { validDishes: [], validSelections: {} };
