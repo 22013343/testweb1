@@ -78,10 +78,11 @@
 
   gtag('config', 'G-MY7L683648');
 </script>
-  <script>
-(function() {
+ 
+<script>
+(function () {
     var _paq = window._paq = window._paq || [];
-    
+
     // Function to track the current page
     function trackCurrentPage() {
         _paq.push(['setCustomUrl', window.location.href]);
@@ -95,16 +96,44 @@
     window.addEventListener('popstate', trackCurrentPage); // Tracks changes in the browser's history
     window.addEventListener('hashchange', trackCurrentPage); // Tracks changes in URL hash fragments
 
-    // Load the Matomo tracker
-    (function() {
-        var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
-        _paq.push(['setTrackerUrl', u + 'matomo.php']);
-        _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
-        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-        g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
-    })();
+    // Check if the page is reloaded
+    var isPageReloaded =
+        performance.navigation.type === 1 || // Navigation Type 1 indicates a reload
+        performance.getEntriesByType("navigation")[0]?.type === "reload";
+
+    // Conditionally load Matomo.js with a delay on page reload
+    if (isPageReloaded) {
+        setTimeout(function () {
+            (function () {
+                var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
+                _paq.push(['setTrackerUrl', u + 'matomo.php']);
+                _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
+                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.type = 'text/javascript';
+                g.async = true;
+                g.defer = true;
+                g.src = u + 'matomo.js';
+                s.parentNode.insertBefore(g, s);
+                console.log("Matomo.js loaded after delay due to page reload.");
+            })();
+        }, 3000); // Delay in milliseconds (3 seconds in this case)
+    } else {
+        // Load Matomo.js immediately for non-reload navigations
+        (function () {
+            var u = "https://tracker.neogroup.com.sg/"; // Replace with your Matomo domain
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '11']); // Replace YOUR_SITE_ID with your actual site ID
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.async = true;
+            g.defer = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+            console.log("Matomo.js loaded immediately (not a reload).");
+        })();
+    }
 })();
-  </script>
+</script>
   <!-- Matomo Tag Manager -->
 <script>
   var _mtm = window._mtm = window._mtm || [];
